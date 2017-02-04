@@ -18,7 +18,7 @@ public class Main extends PApplet {
 	final int INIT_TEMPO = 80;
 	final int INIT_SUBSEQ_COUNT = 3;
 	final int INIT_OCTAVE = 4;
-	final String INIT_KEY = "min";
+	final String INIT_KEY = "maj";
 	// this object can generate the neccesary values to fill the notes array
 	my_sequencer seq;
 

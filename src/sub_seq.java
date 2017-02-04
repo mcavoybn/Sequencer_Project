@@ -30,7 +30,7 @@ public class sub_seq {
 		this.notes = new my_note[step_amt];
 		this.mode = mode;
 
-		apply_mode(mode);
+		// apply_mode(mode);
 		fill();
 	}
 

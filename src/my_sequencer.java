@@ -38,7 +38,7 @@ public class my_sequencer {
 	my_sequencer(String k, int octave, int tempo, int num_sub_seqs, PApplet p) {
 		parent = p;
 
-		key_intervals = gen_music_key_seq(k);
+		this.key_intervals = gen_music_key_seq(k);
 
 		notes = new ArrayList<my_note>();
 
