@@ -1,6 +1,7 @@
 import ddf.minim.AudioOutput;
 import ddf.minim.ugens.Instrument;
 import ddf.minim.ugens.Line;
+import ddf.minim.ugens.MoogFilter;
 import ddf.minim.ugens.Oscil;
 import ddf.minim.ugens.Waves;
 import processing.core.PApplet;
@@ -23,6 +24,7 @@ import processing.core.PApplet;
  **/
 public class my_instrument implements Instrument {
 	Oscil wave;
+	MoogFilter moog_filter;
 	Line ampEnv;
 	PApplet parent; // The parent PApplet that we will render ourselves onto
 	AudioOutput out;
@@ -34,17 +36,22 @@ public class my_instrument implements Instrument {
 		this.out = out;
 		// make a sine wave oscillator and patch the envelope to it
 		wave = new Oscil(frequency, 0, Waves.SINE);
+
 		ampEnv = new Line();
 		ampEnv.patch(wave.amplitude);
+
+		moog_filter = new MoogFilter(500, (float) 0.600, MoogFilter.Type.LP);
+
 	}
 
 	// duration is expressed in seconds.
 	public void noteOn(float duration) {
 		ampEnv.activate(duration, 0.5f, 0);
-		wave.patch(out);
+		wave.patch(moog_filter).patch(out);
 	}
 
 	public void noteOff() {
 		wave.unpatch(out);
+		moog_filter.unpatch(out);
 	}
 }

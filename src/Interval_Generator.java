@@ -95,9 +95,13 @@ public class Interval_Generator {
 			return 0;
 		case "Cs":
 			return 1;
+		case "Db":
+			return 1;
 		case "D":
 			return 2;
 		case "Ds":
+			return 3;
+		case "Eb":
 			return 3;
 		case "E":
 			return 4;
@@ -105,9 +109,13 @@ public class Interval_Generator {
 			return 5;
 		case "Fs":
 			return 6;
+		case "Gb":
+			return 6;
 		case "G":
 			return 7;
 		case "Gs":
+			return 8;
+		case "Ab":
 			return 8;
 		case "A":
 			return 9;

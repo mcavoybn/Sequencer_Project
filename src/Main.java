@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 import ddf.minim.AudioOutput;
 import ddf.minim.Minim;
 import processing.core.PApplet;
@@ -15,13 +17,17 @@ public class Main extends PApplet {
 	Minim minim;
 	AudioOutput out;
 
-	final int INIT_TEMPO = 100;
-	final int INIT_SUBSEQ_COUNT = 12;
-	final int INIT_OCTAVE = 4;
-	final String INIT_KEY = "harMin";
-	final String INIT_ROOT_NOTE = "F";
+	final int INIT_TEMPO = 203;
+	final int INIT_SUBSEQ_COUNT = 1;
+	final int INIT_OCTAVE = 3;
+	final String INIT_KEY = "majPent";
+	final String INIT_ROOT_NOTE = "C";
 	// this object can generate the neccesary values to fill the notes array
 	my_sequencer seq;
+
+	double LOOP_FRAME_COUNT;
+	double LOOP_FRAME_COUNT_OFFSET;
+	ArrayList<Thread> loopingThreads = new ArrayList<Thread>();
 
 	public void settings() {
 		size(500, 500);
@@ -41,16 +47,20 @@ public class Main extends PApplet {
 		seq.fill();
 		// make possible modifications to sequencer here
 
-		seq.sub_list.get(4).set_key_chord("AugC");
-		seq.sub_list.get(4).set_octave(2);
+		// seq.update();
 
-		seq.sub_list.get(5).set_key_chord("AugC");
-		seq.sub_list.get(5).set_octave(4);
-		seq.update();
+		float lastNote = seq.sub_list
+				.get(seq.sub_list.size() - 1).notes[seq.sub_list.get(seq.sub_list.size() - 1).notes.length - 1].time;
+		float lastNoteLength = seq.sub_list.get(
+				seq.sub_list.size() - 1).notes[seq.sub_list.get(seq.sub_list.size() - 1).notes.length - 1].duration;
+
+		LOOP_FRAME_COUNT = (lastNote + lastNoteLength) * frameRate;
+		LOOP_FRAME_COUNT_OFFSET = (LOOP_FRAME_COUNT + 1) - LOOP_FRAME_COUNT;
+		LOOP_FRAME_COUNT = Math.ceil(LOOP_FRAME_COUNT);
 
 		out.pauseNotes();
 		for (int i = 0; i < seq.notes.size(); i++) {
-			out.playNote(seq.notes.get(i).time, seq.notes.get(i).duration,
+			out.playNote(seq.notes.get(i).time + (float) LOOP_FRAME_COUNT_OFFSET, seq.notes.get(i).duration,
 					new my_instrument(this, seq.notes.get(i).note_freq, out));
 		}
 		out.resumeNotes();
@@ -62,6 +72,13 @@ public class Main extends PApplet {
 	float colorModB = 125;
 
 	public void draw() {
+		if (frameCount % LOOP_FRAME_COUNT == 0) {
+			for (int i = 0; i < seq.notes.size(); i++) {
+				out.playNote(seq.notes.get(i).time + (float) LOOP_FRAME_COUNT_OFFSET, seq.notes.get(i).duration,
+						new my_instrument(this, seq.notes.get(i).note_freq, out));
+			}
+			out.resumeNotes();
+		}
 		background(0);
 		stroke(255);
 		if (colorModR <= 255) {
